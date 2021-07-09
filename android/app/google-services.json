@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "441214311510",
+    "project_id": "mates-65234",
+    "storage_bucket": "mates-65234.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441214311510:android:9a9eb0e5af7ac4a96e6ff7",
+        "android_client_info": {
+          "package_name": "com.example.mates"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "441214311510-ebknq5u34ca8r9dtec842jag7c9kg099.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnj58NNaEYSS2xt1jQxLN31q2IKVJ2FaM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "441214311510-ebknq5u34ca8r9dtec842jag7c9kg099.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
