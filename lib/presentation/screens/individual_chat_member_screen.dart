@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:mates/models/member_model.dart';
 import '../../models/chat_model.dart';
 import '../../presentation/widgets/emoji_container.dart';
 
-class IndividualChat extends StatefulWidget {
+class IndividualMemberChat extends StatefulWidget {
   static String routeName = "IndividualChat";
-  final ChatModel individualChat;
+  final MemberModel memberModel;
 
-  IndividualChat(this.individualChat);
-
+  IndividualMemberChat(this.memberModel);
   @override
-  _IndividualChatState createState() => _IndividualChatState();
+  _IndividualMemberChatState createState() => _IndividualMemberChatState();
 }
 
-class _IndividualChatState extends State<IndividualChat> {
+class _IndividualMemberChatState extends State<IndividualMemberChat> {
   bool showEmoji = false;
   FocusNode focusNode = FocusNode();
   TextEditingController controller = TextEditingController();
@@ -47,7 +47,7 @@ class _IndividualChatState extends State<IndividualChat> {
               ),
               CircleAvatar(
                 radius: 20,
-                backgroundColor: Colors.blueGrey,
+               backgroundImage: NetworkImage(widget.memberModel.imageUrl),
               )
             ],
           ),
@@ -61,7 +61,7 @@ class _IndividualChatState extends State<IndividualChat> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 FittedBox(
-                  child: Text(widget.individualChat.userName,
+                  child: Text(widget.memberModel.name,
                       style: TextStyle(
                           fontSize: 18.5, fontWeight: FontWeight.bold)),
                 ),
@@ -72,13 +72,13 @@ class _IndividualChatState extends State<IndividualChat> {
             ),
           ),
         ),
-        actions: [
+        /*actions: [
           IconButton(
               icon: Icon(
                 Icons.videocam,
               ),
               onPressed: () {}),
-        ],
+        ],*/
       ),
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -121,17 +121,7 @@ class _IndividualChatState extends State<IndividualChat> {
                                         icon:
                                             Icon(Icons.emoji_emotions_outlined),
                                       ),
-                                      suffixIcon: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          IconButton(
-                                              icon: Icon(Icons.attach_file),
-                                              onPressed: () {}),
-                                          IconButton(
-                                              icon: Icon(Icons.camera_alt),
-                                              onPressed: () {}),
-                                        ],
-                                      ),
+                                     
                                       hintText: "Type a Message",
                                       contentPadding: EdgeInsets.all(5)),
                                 ))),
@@ -142,7 +132,7 @@ class _IndividualChatState extends State<IndividualChat> {
                             radius: 25,
                             child: IconButton(
                               icon: Icon(
-                                Icons.mic,
+                                Icons.send,
                                 color: Colors.white,
                               ),
                               onPressed: () {},
@@ -151,7 +141,7 @@ class _IndividualChatState extends State<IndividualChat> {
                         )
                       ],
                     ),
-                    showEmoji ? EmojiContainer(controller) : Container()
+                    showEmoji ? /*EmojiContainer(controller)*/Container() : Container()
                   ],
                 ),
               ),

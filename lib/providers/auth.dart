@@ -10,28 +10,31 @@ import '../presentation/screens/login_screen.dart';
 import '../models/user_model.dart';
 
 class Auth with ChangeNotifier {
-
   String token;
   MyUser currentUser = MyUser();
-  String deviceType='android';
+  String deviceType = 'android';
+
   bool get isAuth => token != null ? true : false;
   Dio dio = Dio();
+  var deviceToken;
 
+  Auth({this.deviceToken});
 
   Future<void> signUp(String userName, String email, String userPassword,
       String confirm, File userImage, String bio) async {
     final url = 'https://boiling-shelf-43809.herokuapp.com/user/signup';
+
     try {
-     // print("deviceToken::::$deviceToken");
+      print("deviceToken::::$deviceToken");
       String imageName = userImage.path.split('/').last;
       FormData formData = FormData.fromMap({
         "name": userName,
         "email": email,
         "password": userPassword,
         "confirmPassword": confirm,
-        "userBio": bio,
-        "deviceType":deviceType,
-       // "deviceToken":deviceToken,
+        "bio": bio,
+        "deviceType": deviceType,
+        "deviceToken": deviceToken,
         "": await MultipartFile.fromFile(userImage.path,
             filename: imageName, contentType: MediaType('image', 'jpg'))
       });
@@ -46,6 +49,78 @@ class Auth with ChangeNotifier {
     } catch (e) {
       throw Exception(e.toString());
     }
+  }
+
+  Future<void> logIn(String email, String userPassword) async {
+    final url = 'https://boiling-shelf-43809.herokuapp.com/user/signin';
+    try {
+      Response res = await dio.post(url, data: {
+        "email": email,
+        "password": userPassword,
+      });
+      print(res.data);
+      token = res.data["token"];
+      currentUser.name = res.data['user']['name'];
+      currentUser.email = res.data['user']['email'];
+      currentUser.id = res.data['user']['id'];
+      currentUser.image = res.data['user']['url'];
+      currentUser.bio = res.data['user']["bio"];
+      if (token != null) {
+        final userData = json.encode({
+          "token": token,
+          "userName": res.data['user']['name'],
+          "userEmail": res.data['user']['email'],
+          "userId": res.data['user']['id'],
+          "imageUrl": res.data['user']['url'],
+          "userBio": res.data['user']['bio']
+        });
+        CacheHelper.saveData(key: "userData", value: userData);
+        checkDeviceToken();
+      }
+      print(token);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  void checkDeviceToken() async {
+    FormData formData=FormData.fromMap({"token": deviceToken, "deviceType": deviceType});
+    Response res = await dio.post(
+        "https://boiling-shelf-43809.herokuapp.com/notifications/subscribe",
+        options: Options(headers: {'authorization': token}),
+        data:formData );
+    print(res.data);
+  }
+
+  void deactivateDeviceToken() async {
+    Response res = await dio.post(
+        "https://boiling-shelf-43809.herokuapp.com/notifications/unsubscribe",
+        options: Options(headers: {'authorization': token}),
+        data: {"token": deviceToken});
+    print(res.data);
+  }
+
+  Future<bool> tryAutoLogin() async {
+    if (!CacheHelper.sharedPreferences.containsKey("userData")) {
+      return false;
+    } else {
+      final sharedUserData = json.decode(CacheHelper.getData(key: "userData"))
+          as Map<String, Object>;
+      token = sharedUserData["token"];
+      currentUser.name = sharedUserData['userName'];
+      currentUser.email = sharedUserData['userEmail'];
+      currentUser.id = sharedUserData['userId'];
+      currentUser.image = sharedUserData['imageUrl'];
+      currentUser.bio = sharedUserData['userBio'];
+      return true;
+    }
+  }
+
+  void logOut(BuildContext context) {
+    token = null;
+    deactivateDeviceToken();
+    CacheHelper.sharedPreferences.clear();
+    Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
   }
 
   Future<void> editProfile(
@@ -103,58 +178,5 @@ class Auth with ChangeNotifier {
     } catch (e) {
       print(e);
     }
-  }
-
-  Future<void> logIn(String email, String userPassword) async {
-    final url = 'https://boiling-shelf-43809.herokuapp.com/user/signin';
-    try {
-      Response res = await dio.post(url, data: {
-        "email": email,
-        "password": userPassword,
-      });
-      print(res.data);
-      token = res.data["token"];
-      currentUser.name = res.data['user']['name'];
-      currentUser.email = res.data['user']['email'];
-      currentUser.id = res.data['user']['id'];
-      currentUser.image = res.data['user']['url'];
-      currentUser.bio = res.data['user']["bio"];
-      if (token != null) {
-        final userData = json.encode({
-          "token": token,
-          "userName": res.data['user']['name'],
-          "userEmail": res.data['user']['email'],
-          "userId": res.data['user']['id'],
-          "imageUrl": res.data['user']['url'],
-          "userBio": res.data['user']['bio']
-        });
-        CacheHelper.saveData(key: "userData", value: userData);
-      }
-      print(token);
-    } catch (e) {
-      throw Exception(e.toString());
-    }
-  }
-
-  Future<bool> tryAutoLogin() async {
-    if (!CacheHelper.sharedPreferences.containsKey("userData")) {
-      return false;
-    } else {
-      final sharedUserData = json.decode(CacheHelper.getData(key: "userData"))
-          as Map<String, Object>;
-      token = sharedUserData["token"];
-      currentUser.name = sharedUserData['userName'];
-      currentUser.email = sharedUserData['userEmail'];
-      currentUser.id = sharedUserData['userId'];
-      currentUser.image = sharedUserData['imageUrl'];
-      currentUser.bio = sharedUserData['userBio'];
-      return true;
-    }
-  }
-
-  void logOut(BuildContext context) {
-    token = null;
-    CacheHelper.sharedPreferences.clear();
-    Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
   }
 }

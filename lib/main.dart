@@ -1,6 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:mates/cache_helper.dart';
 import 'package:mates/presentation/screens/edit_profile_screen.dart';
+import 'package:mates/presentation/screens/individual_chat_member_screen.dart';
 import 'package:mates/presentation/screens/splash_screen.dart.dart';
 import 'package:mates/providers/files_provider.dart';
 import 'package:mates/providers/post_provider.dart';
@@ -23,30 +26,29 @@ import './providers/auth.dart';
 import './providers/chat_provider.dart';
 import './providers/meeting_provider.dart';
 
-
-Future<void> main()async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  var deviceToken = await FirebaseMessaging.instance.getToken();
   await CacheHelper.init();
   initializeDateFormatting();
-  runApp(MyApp());
+  runApp(MyApp(
+    deviceToken: deviceToken,
+  ));
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  var deviceToken;
 
-  @override
-  _MyAppState createState() => _MyAppState();
-}
+  MyApp({this.deviceToken});
 
-class _MyAppState extends State<MyApp> {
-
-  @override
   @override
   Widget build(BuildContext context) {
-
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<Auth>(create: (context) => Auth( )),
+        ChangeNotifierProvider<Auth>(
+            create: (context) => Auth(deviceToken: deviceToken)),
         ChangeNotifierProxyProvider<Auth, TeamProvider>(
             create: (context) => TeamProvider(),
             update: (context, auth, previous) =>
@@ -65,14 +67,23 @@ class _MyAppState extends State<MyApp> {
             create: (context) => ChatProvider()),
       ],
       child: Consumer<Auth>(
-        builder:(ctx,authSnapshot,_)=> MaterialApp(
+        builder: (ctx, authSnapshot, _) => MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Mates',
           theme: ThemeData(
             primarySwatch: Colors.blue,
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          home:authSnapshot.isAuth?HomeScreen():FutureBuilder(builder: (ctx,snapshot){return snapshot.connectionState==ConnectionState.waiting?SplashScreen():IntroScreen();},future: authSnapshot.tryAutoLogin(),) ,
+          home: authSnapshot.isAuth
+              ? HomeScreen()
+              : FutureBuilder(
+                  builder: (ctx, snapshot) {
+                    return snapshot.connectionState == ConnectionState.waiting
+                        ? SplashScreen()
+                        : IntroScreen();
+                  },
+                  future: authSnapshot.tryAutoLogin(),
+                ),
           routes: {
             IntroScreen.routeName: (_) => IntroScreen(),
             LoginScreen.routeName: (_) => LoginScreen(),
@@ -84,7 +95,8 @@ class _MyAppState extends State<MyApp> {
             ProfileScreen.routeName: (_) => ProfileScreen(),
             UserProfileScreen.routeName: (_) => UserProfileScreen(),
             ScheduleMeeting.routeName: (_) => ScheduleMeeting(),
-            EditProfileScreen.routeName:(_)=>EditProfileScreen()
+            EditProfileScreen.routeName: (_) => EditProfileScreen()
+
           },
         ),
       ),

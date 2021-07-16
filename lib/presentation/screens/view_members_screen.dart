@@ -53,7 +53,7 @@ class _ViewMembersScreenState extends State<ViewMembersScreen> {
           ? Center(
               child: Text('Type the Member Name To Search For'),
             )
-          : ListView.builder(itemBuilder:(context,index)=>TeamMemberCard(memberName:teams.members[index] ,) ,itemCount: teams.members.length,),
+          : ListView.builder(itemBuilder:(context,index)=>TeamMemberCard(memberData:teams.members[index] ,) ,itemCount: teams.members.length,),
     );
   }
 }

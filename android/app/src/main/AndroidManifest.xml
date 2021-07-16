@@ -6,8 +6,8 @@
        tools:replace="icon, label"
        android:label="mates"
        android:icon="@mipmap/ic_launcher"
-       android:supportsRtl="true">
        android:usesCleartextTraffic="true"
+       >
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

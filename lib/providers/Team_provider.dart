@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:mates/models/member_model.dart';
 import '../models/team_model.dart';
 
 import 'dart:io';
@@ -11,12 +12,12 @@ class TeamProvider with ChangeNotifier {
   Dio dio = Dio();
   File teamImage;
   List<Team> _teams = [];
-  List<String> _teamMembers=[];
+  List<MemberModel> _teamMembers=[];
 
   List<Team> get teams {
     return [..._teams];
   }
-  List<String> get members {
+  List<MemberModel> get members {
     return [..._teamMembers];
   }
 
@@ -35,7 +36,8 @@ return teams;
     try{
       _teamMembers=[];
       Response res=await dio.get("https://boiling-shelf-43809.herokuapp.com/team/$teamId/viewMember",options: Options(headers:{'authorization':authToken}));
-      res.data['memberData'].forEach((m){_teamMembers.add(m);
+      print(res.data);
+      res.data['memberData'].forEach((m){_teamMembers.add(MemberModel(id: m["id"],name: m["name"],imageUrl: m["url"]));
       notifyListeners();});
     }catch(e){print(e);}
 

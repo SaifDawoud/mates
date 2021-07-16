@@ -1,7 +1,7 @@
 class ChatModel{
+  String id;
   String userName;
-  String currentMessage;
-  String time;
-  String userImage;
-  ChatModel({this.currentMessage,this.time,this.userImage,this.userName});
+  String lastMessage;
+  String userImageUrl;
+  ChatModel({this.lastMessage,this.userImageUrl,this.userName});
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../models/chat_model.dart';
 import 'package:provider/provider.dart';
 import '../../providers/chat_provider.dart';
-import '../screens/individual_chat_screen.dart';
+import '../screens/individual_chat_member_screen.dart';
 
 
 class ChatScreen extends StatefulWidget {
@@ -22,8 +22,10 @@ class _ChatScreenState extends State<ChatScreen> {
     return ListView.separated(
       itemCount: chats.length,
       itemBuilder: (context, index) {
-        return InkWell( onTap: (){
-          Navigator.of(context).push(MaterialPageRoute(builder: (context)=>IndividualChat(chats[index])));
+        return InkWell(onTap: (){
+          /*Navigator.of(context).push(MaterialPageRoute(builder: (context){
+            return IndividualChat(chats[index]);
+          }));*/
         },
           child: ListTile(
             leading: CircleAvatar(
@@ -31,8 +33,8 @@ class _ChatScreenState extends State<ChatScreen> {
               backgroundColor: Colors.purple,
             ),
             title: Text(chats[index].userName),
-            subtitle: Text(chats[index].currentMessage),
-            trailing: Text(chats[index].time),
+            subtitle: Text(chats[index].lastMessage),
+
           ),
         );
       },
