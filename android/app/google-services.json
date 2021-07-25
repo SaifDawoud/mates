@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "441214311510",
-    "project_id": "mates-65234",
-    "storage_bucket": "mates-65234.appspot.com"
+    "project_number": "915224610897",
+    "project_id": "fir-cloud-messaging-58b75",
+    "storage_bucket": "fir-cloud-messaging-58b75.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:441214311510:android:9a9eb0e5af7ac4a96e6ff7",
+        "mobilesdk_app_id": "1:915224610897:android:c511b9cd2135e319a4d070",
         "android_client_info": {
           "package_name": "com.example.mates"
         }
       },
       "oauth_client": [
         {
-          "client_id": "441214311510-ebknq5u34ca8r9dtec842jag7c9kg099.apps.googleusercontent.com",
+          "client_id": "915224610897-5pg886m4hrv7o4tpkdk9mfb4s32vsdil.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBnj58NNaEYSS2xt1jQxLN31q2IKVJ2FaM"
+          "current_key": "AIzaSyDtM0REpOSkPZlVDT_d4ql0XrmFZYkcBpQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "441214311510-ebknq5u34ca8r9dtec842jag7c9kg099.apps.googleusercontent.com",
+              "client_id": "915224610897-5pg886m4hrv7o4tpkdk9mfb4s32vsdil.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
